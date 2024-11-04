@@ -55,11 +55,77 @@ PatPals/
 │   ├── frame1.png
 │   ├── frame2.png
 │   └── frame3.png
+├── cmd/
+│   └── main.go                    # 项目入口，启动应用并初始化窗口和宠物
+├── internal/
+│   ├── pet/
+│   │   ├── DraggableImage.go      # 支持拖动和鼠标事件的图片组件
+│   │   ├── animation.go           # 宠物动画帧的加载与播放
+│   │   ├── interaction.go         # 宠物交互逻辑（点击、悬停等）
+│   │   ├── pet.go                 # Pet 结构体定义与初始化
+│   │   ├── reminders.go           # 定时提醒功能
+│   │   └── speech.go              # 宠物的语音提示功能
+│   └── ui/
+│       ├── ui.go                  # 窗口设置和通用 UI 组件（关于对话框）
+│       ├── window_darwin.go       # MacOS 平台特定的透明窗口设置
+│       ├── window_windows.go      # Windows 平台特定的透明窗口设置
+│       └── window_linux.go        # Linux 平台特定的透明窗口设置
+└── pkg/
+│   └── utils.go                   # 常用的对话框显示封装函数
 ├── go.mod                # Go模块配置文件
 └── main.go               # 主程序文件
 ```
 
 
+## 项目架构图
+
+```mermaid
+graph TD
+
+%% Main entry point
+A[main.go:main] -->|Initialize App & Window| B[NewPet]
+A -->|Setup Window| C[SetupWindow]
+A -->|Defer Cleanup| J[StopReminders]
+
+%% Pet initialization and functionality
+B -->|Load Frames| D[loadFrames]
+B -->|Create Draggable Image| E[NewDraggableImage]
+B -->|Start Animation| F[startAnimation]
+B -->|Setup Interaction| G[setupInteraction]
+B -->|Start Reminders| H[startReminders]
+B -->|Enable Speech| I[speak]
+
+%% Draggable Image functionality
+E -->|Setup Mouse Events| G1[SetOnTapped]
+E --> G2[SetOnTappedSecondary]
+E --> G3[SetOnMouseIn]
+E --> G4[SetOnMouseOut]
+
+%% Animation Loop
+F -->|Update Image Resource| E
+F -->|Loop Through Frames| F
+
+%% Reminder System
+H -->|Trigger Reminder on Interval| K[showReminder]
+
+%% UI Setup and Dialog
+C -->|Make Window Transparent| L[makeWindowTransparent]
+C -->|About Dialog| M[showAboutDialog]
+
+%% Utility Functions
+M -->|Show Information Dialog| N[ShowMessage]
+
+%% Styling nodes
+style A fill:#f9f,stroke:#333,stroke-width:4px
+style B fill:#ccf,stroke:#333,stroke-width:2px
+style C fill:#ccf,stroke:#333,stroke-width:2px
+style E fill:#cfc,stroke:#333,stroke-width:2px
+style F fill:#cfc,stroke:#333,stroke-width:2px
+style H fill:#cfc,stroke:#333,stroke-width:2px
+style I fill:#cfc,stroke:#333,stroke-width:2px
+style K fill:#fcc,stroke:#333,stroke-width:2px
+style M fill:#ccf,stroke:#333,stroke-width:2px
+```
 
 ## 未来计划
 
